@@ -3,24 +3,6 @@ from dataclasses import field
 from typing import List
 from abc import ABC, abstractmethod
 
-@dataclass
-class Pedido:
-    items: List[str] = field(init=False,default_factory=list)
-    cantidades: List[int] = field(init=False,default_factory=list)
-    precios: List[float] = field(init=False,default_factory=list)
-    estado: str = field(default='abierto',init=False)
-
-    def agregar_item(self, item, cantidad, precio):
-        self.items.append(item)
-        self.cantidades.append(cantidad)
-        self.precios.append(precio)
-
-    def precio_total(self):
-        total = 0
-        for i in range(len(self.precios)):
-            total = total + (self.cantidades[i]*self.precios[i])
-        return total
-
 class ProcesadorDePagos(ABC):
     @abstractmethod
     def pagar(self,pedido):
@@ -37,23 +19,11 @@ class AutorizadorDePagosSMS:
     def esAutorizado(self) -> bool:
         return self.autorizado
 
-@dataclass
-class AutorizadorDeCaptcha:
-    autorizado: bool = field(default=False)
-
-    def verificar_captcha(self):
-        print(f'Verificando captcha')
-        self.autorizado = True
-
-    def esAutorizado(self) -> bool:
-        return self.autorizado
-
-
 
 @dataclass
 class ProcesadorDePagosConDebito(ProcesadorDePagos):
     codigo_seg: str
-    autorizador: AutorizadorDePagosSMS
+    autorizadorSMS: AutorizadorDePagosSMS
     def pagar(self,pedido):
         if not self.autorizadorSMS.esAutorizado():
             raise Exception('Pago no autorizado')
@@ -77,33 +47,11 @@ class ProcesadorDePagosConCredito(ProcesadorDePagos):
 @dataclass
 class ProcesadorDePagosConBitcoin(ProcesadorDePagos):
     num_bv: str
-    #autorizador: AutorizadorDePagosSMS
-    autorizador: AutorizadorDeCaptcha
+    autorizadorSMS: AutorizadorDePagosSMS
     def pagar(self,pedido,crypto):
-        if not self.autorizador.esAutorizado():
+        if not self.autorizadorSMS.esAutorizado():
             raise Exception('Pago no autorizado')
         print(f'Procesando pago de tipo {crypto}')
         print(f'Verificando numero de billetera virtual {self.num_bv}')
         pedido.estado = 'pagado'
-
-pedido = Pedido()
-print('Debug:',pedido)
-
-pedido.agregar_item(item='Lomito',cantidad=2,precio=600.0)
-print('Debug:',pedido)
-
-print('Debug:',f'Precio total: {pedido.precio_total()}')
-
-autorizador = AutorizadorDeCaptcha()
-
-procesadorDePagos = ProcesadorDePagosConBitcoin(num_bv='ASDUX534SD35C53ASD',autorizador=autorizador)
-
-print('Debug:',autorizador.esAutorizado())
-
-autorizador.verificar_captcha()
-
-procesadorDePagos.pagar(pedido,crypto='ETH')
-
-print('Debug:',autorizador.esAutorizado())
-print('Debug:',pedido)
 
