@@ -1,0 +1,20 @@
+@startuml SingleResp
+skinparam roundcorner 20
+
+class Pedido {
+    items: list[str]
+    cantidades: list[int]
+    precios: list[float]
+    estado: str
+
+    agregar_item()
+    precio_total(item,cantidad,precio)
+}
+
+class ProcesadorDePagos {
+    pagar_con_debito()
+    pagar_con_credito()
+}
+
+ProcesadorDePagos ..> Pedido
+@enduml

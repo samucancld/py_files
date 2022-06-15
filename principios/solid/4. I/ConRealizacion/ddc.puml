@@ -1,0 +1,47 @@
+@startuml InterfaceSegrgationConRealizacion
+skinparam roundcorner 20
+
+class Pedido {
+    items: list[str]
+    cantidades: list[int]
+    precios: list[float]
+    estado: str
+
+    agregar_item()
+    precio_total()
+}
+
+interface ProcesadorDePagos {
+    pagar(pedido)
+}
+
+abstract class ProcesadorDePagosConSMS {
+    autorizar_SMS(codigo_seg)
+}
+
+class ProcesadorDePagosConDebito {
+    codigo_seg: str
+    verificado: bool
+    pagar(pedido)
+    autorizar_SMS(codigo_seg)
+}
+
+class ProcesadorDePagosConCredito {
+    codigo_seg: str
+    pagar(pedido)
+}
+
+class ProcesadorDePagosConBitcoin {
+    num_bv: str
+    verificado: bool
+
+    pagar(pedido,crypto)
+    autorizar_SMS(codigo_seg)
+}
+
+ProcesadorDePagos ..> Pedido
+ProcesadorDePagosConDebito ..|> ProcesadorDePagosConSMS
+ProcesadorDePagosConCredito ..|> ProcesadorDePagos
+ProcesadorDePagosConBitcoin ..|> ProcesadorDePagosConSMS
+ProcesadorDePagosConSMS ..|> ProcesadorDePagos
+@enduml

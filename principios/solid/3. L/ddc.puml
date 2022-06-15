@@ -1,0 +1,37 @@
+@startuml LiskovSustitution
+skinparam roundcorner 20
+
+class Pedido {
+    items: list[str]
+    cantidades: list[int]
+    precios: list[float]
+    estado: str
+
+    agregar_item()
+    precio_total()
+}
+
+interface ProcesadorDePagos {
+    pagar()
+}
+
+class ProcesadorDePagosConDebito {
+    codigo_seg: str
+    pagar(pedido)
+}
+
+class ProcesadorDePagosConCredito {
+    codigo_seg: str
+    pagar(pedido)
+}
+
+class ProcesadorDePagosConBitcoin {
+    num_bv: str
+    pagar(pedido,crypto)
+}
+
+ProcesadorDePagos ..> Pedido
+ProcesadorDePagosConDebito ..|> ProcesadorDePagos
+ProcesadorDePagosConCredito ..|> ProcesadorDePagos
+ProcesadorDePagosConBitcoin ..|> ProcesadorDePagos
+@enduml

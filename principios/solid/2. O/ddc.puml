@@ -1,0 +1,34 @@
+@startuml OpenClose
+skinparam roundcorner 20
+
+class Pedido {
+    items: list[str]
+    cantidades: list[int]
+    precios: list[float]
+    estado: str
+
+    agregar_item()
+    precio_total()
+}
+
+interface ProcesadorDePagos {
+    pagar()
+}
+
+class ProcesadorDePagosConDebito {
+    pagar(pedido,codigo_seg)
+}
+
+class ProcesadorDePagosConCredito {
+    pagar(pedido,codigo_seg)
+}
+
+class ProcesadorDePagosConBitcoin {
+    pagar(pedido,codigo_seg,crypto)
+}
+
+ProcesadorDePagos ..> Pedido
+ProcesadorDePagosConDebito ..|> ProcesadorDePagos
+ProcesadorDePagosConCredito ..|> ProcesadorDePagos
+ProcesadorDePagosConBitcoin ..|> ProcesadorDePagos
+@enduml

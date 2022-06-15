@@ -28,7 +28,7 @@ class ProcesadorDePagosConDebito(ProcesadorDePagos):
 @dataclass
 class ProcesadorDePagosConCredito(ProcesadorDePagos):
     codigo_seg: str
-    def pagar_con_credito(self,pedido):
+    def pagar(self,pedido):
         print('Procesando pago de tipo credito')
         print(f'Verificando codigo de seguridad {self.codigo_seg}')
         pedido.estado = 'pagado'

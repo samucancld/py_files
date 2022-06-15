@@ -32,3 +32,4 @@ class AutorizadorDeCaptcha(Autorizador):
 
     def esAutorizado(self) -> bool:
         return self.autorizado
+
